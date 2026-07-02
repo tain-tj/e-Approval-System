@@ -68,8 +68,14 @@
             <div class="bg-white p-4 rounded-xl shadow-sm">
                 <input type="text" id="docId" placeholder="หมายเลขเอกสาร" class="w-full mb-3 p-2 border rounded">
                 <input type="text" id="title" placeholder="เรื่อง" class="w-full mb-3 p-2 border rounded">
-                <select id="docType" class="w-full mb-3 p-2 border rounded"><option>WI</option><option>FI</option></select>
-                <select id="docStatus" class="w-full mb-3 p-2 border rounded"><option>เอกสารบังคับใช้</option><option>เอกสารทั่วไป</option></select>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <select id="docType" class="w-full p-2 border rounded"><option>WI</option><option>FI</option></select>
+                    <select id="docStatus" class="w-full p-2 border rounded"><option>เอกสารบังคับใช้</option><option>เอกสารทั่วไป</option></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <input type="number" id="revNo" placeholder="ฉบับที่" class="w-full p-2 border rounded">
+                    <select id="secretLevel" class="w-full p-2 border rounded"><option>เอกสารภายใน</option><option>ลับ</option></select>
+                </div>
                 <input type="file" id="fileUpload" accept=".pdf" class="w-full mb-4 p-2 border rounded text-sm">
                 <button onclick="submitRequest()" class="w-full bg-blue-500 text-white p-3 rounded-xl font-medium">ส่งขออนุมัติ</button>
             </div>
@@ -210,16 +216,114 @@
         });
     }
     
-    // Utilities เดิม...
+    async function submitRequest() {
+        const fileInput = document.getElementById('fileUpload');
+        if(fileInput.files.length === 0) return Swal.fire('แจ้งเตือน', 'กรุณาแนบไฟล์เอกสาร PDF', 'warning');
+        
+        showLoading('กำลังอัปโหลดเอกสาร...');
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = async function() {
+            const payload = {
+                action: 'submitDoc', username: currentUser.username, name: currentUser.name, dept: currentUser.dept,
+                docId: document.getElementById('docId').value, title: document.getElementById('title').value,
+                docType: document.getElementById('docType').value, docStatus: document.getElementById('docStatus').value,
+                revNo: document.getElementById('revNo').value, secretLevel: document.getElementById('secretLevel').value,
+                fileName: file.name, fileBase64: reader.result
+            };
+
+            try {
+                const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.success) {
+                    Swal.fire('สำเร็จ', result.message, 'success');
+                    // เคลียร์ฟอร์ม
+                    document.getElementById('docId').value = ''; document.getElementById('title').value = ''; fileInput.value = '';
+                    // โหลดข้อมูลใหม่และสลับหน้า
+                    loadTracking();
+                    loadDashboard();
+                    document.querySelectorAll('.nav-item')[2].click(); 
+                }
+            } catch (err) { Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ', 'error'); }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 4. โหลดข้อมูล Tracking
+    async function loadTracking() {
+        const container = document.getElementById('trackingListContainer');
+        container.innerHTML = '<p class="text-center text-gray-500 text-sm py-4"><i class="fas fa-spinner fa-spin"></i> กำลังโหลดข้อมูล...</p>';
+        
+        try {
+            const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getTracking', username: currentUser.username }) });
+            const result = await res.json();
+            
+            if (result.success && result.data.length > 0) {
+                let html = '';
+                result.data.forEach(item => {
+                    let statusColor = item.status.includes('อนุมัติ') ? 'bg-green-500' : 'bg-yellow-500';
+                    html += `
+                    <div class="bg-white border border-gray-100 shadow-sm p-4 rounded-xl mb-3 flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-gray-800 text-sm">${item.docId}</h4>
+                            <p class="text-xs text-gray-500 truncate w-40">${item.title}</p>
+                            <p class="text-xs text-blue-400 mt-1"><i class="far fa-calendar-alt"></i> ${item.date}</p>
+                        </div>
+                        <span class="${statusColor} text-white text-xs px-2 py-1 rounded-full">${item.status}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="text-center text-gray-400 text-sm py-4">ไม่พบประวัติการขออนุมัติ</p>';
+            }
+        } catch (err) { container.innerHTML = '<p class="text-center text-red-400 text-sm py-4">โหลดข้อมูลผิดพลาด</p>'; }
+    }
+
+    // 5. โหลดข้อมูล Dashboard
+    async function loadDashboard() {
+        try {
+            const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboard', username: currentUser.username }) });
+            const result = await res.json();
+            if (result.success) {
+                document.getElementById('stat-total').innerText = result.stats.total;
+                document.getElementById('stat-approved').innerText = result.stats.approved;
+                document.getElementById('stat-pending').innerText = result.stats.pending;
+            }
+        } catch (err) { console.error('Dashboard Load Error', err); }
+    }
+
+    // ฟังก์ชันจัดการ UI ทั่วไป
+    function showMainApp() {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainAppSection').style.display = 'block';
+        document.getElementById('displayUserName').innerText = currentUser.name;
+        document.getElementById('displayUserRole').innerText = currentUser.role;
+    }
+
+    function logout() {
+        Swal.fire({
+            title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่, ออกจากระบบ', cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                currentUser = null;
+                document.getElementById('authSection').style.display = 'flex';
+                document.getElementById('mainAppSection').style.display = 'none';
+                document.getElementById('log_password').value = '';
+            }
+        });
+    }
+
     function switchTab(tabId, element) {
+        // ซ่อนทุกหน้าที่มีคลาส tab-content
         document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        // แสดงเฉพาะหน้าที่ถูกคลิก
         document.getElementById('tab-' + tabId).style.display = 'block';
+        
+        // จัดการสีของปุ่มเมนูด้านล่าง
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
     }
-    function logout() { location.reload(); }
-    
-    // (ฟังก์ชัน loadDashboard, loadTracking, submitRequest โค้ดจะเหมือนเดิมที่ส่งไปให้ในรอบที่แล้วครับ สามารถใส่รวมต่อท้ายได้เลย)
 </script>
 </body>
 </html>
