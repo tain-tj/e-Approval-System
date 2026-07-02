@@ -15,59 +15,62 @@
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 50;}
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.75rem; cursor: pointer; transition: color 0.3s; width: 25%;}
         .nav-item.active { color: #3b82f6; }
-        .nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
     </style>
 </head>
 <body onload="initApp()">
 
 <div class="app-container">
     <div id="authSection" class="p-8 flex flex-col justify-center min-h-screen bg-blue-50">
-        <div class="text-center mb-8">
-            <i class="fas fa-file-signature text-6xl text-blue-500 mb-4"></i><h1 class="text-2xl font-semibold text-gray-800" id="authTitle">เข้าสู่ระบบ</h1>
-        </div>
-        <div id="loginForm" class="bg-white p-6 rounded-2xl shadow-sm border border-blue-100">
+        <div class="text-center mb-8"><i class="fas fa-file-signature text-6xl text-blue-500 mb-4"></i><h1 class="text-2xl font-semibold" id="authTitle">เข้าสู่ระบบ</h1></div>
+        <div id="loginForm" class="bg-white p-6 rounded-2xl shadow-sm border">
             <input type="text" id="log_username" placeholder="Username" class="w-full mb-4 p-3 border rounded-xl">
             <input type="password" id="log_password" placeholder="Password" class="w-full mb-6 p-3 border rounded-xl">
             <button onclick="handleLogin()" class="w-full bg-blue-500 text-white p-3 rounded-xl font-medium">เข้าสู่ระบบ</button>
             <p class="text-center text-sm text-gray-500 mt-4 cursor-pointer" onclick="toggleAuth('register')">ลงทะเบียนใหม่</p>
         </div>
-        <div id="registerForm" class="hidden-section bg-white p-6 rounded-2xl shadow-sm border border-blue-100">
+        <div id="registerForm" class="hidden-section bg-white p-6 rounded-2xl shadow-sm border">
             <input type="text" id="reg_username" placeholder="Username" class="w-full mb-3 p-3 border rounded-xl">
             <input type="password" id="reg_password" placeholder="Password" class="w-full mb-3 p-3 border rounded-xl">
             <input type="text" id="reg_name" placeholder="ชื่อ-นามสกุล" class="w-full mb-3 p-3 border rounded-xl">
-            <select id="reg_dept" class="w-full mb-3 p-3 border rounded-xl bg-white text-gray-600"><option value="">กำลังโหลดแผนก...</option></select>
+            <select id="reg_dept" class="w-full mb-3 p-3 border rounded-xl bg-white"><option value="">กำลังโหลดแผนก...</option></select>
             <input type="email" id="reg_email" placeholder="Email" class="w-full mb-4 p-3 border rounded-xl">
             <button onclick="handleRegister()" class="w-full bg-green-500 text-white p-3 rounded-xl font-medium">สมัครใช้งาน</button>
             <p class="text-center text-sm text-gray-500 mt-4 cursor-pointer" onclick="toggleAuth('login')">ย้อนกลับ</p>
         </div>
     </div>
 
-    <div id="mainAppSection" class="hidden-section pb-20">
+    <div id="mainAppSection" class="hidden-section pb-24">
         <div class="bg-blue-600 text-white p-5 rounded-b-3xl shadow-md mb-6 flex justify-between items-center">
-            <div><h2 class="text-lg font-semibold"><span id="displayUserName"></span></h2><p class="text-xs" id="displayUserRole"></p></div>
+            <div><h2 class="text-lg font-semibold"><span id="displayUserName"></span></h2><p class="text-xs text-blue-200" id="displayUserRole"></p></div>
             <button onclick="logout()"><i class="fas fa-sign-out-alt text-xl"></i></button>
         </div>
 
         <div id="tab-dashboard" class="p-4 tab-content">
-            <h3 class="text-xl font-semibold mb-4">ภาพรวม</h3>
-            
-            <div id="admin-stats" class="bg-red-50 p-4 rounded-xl text-center border border-red-100 mb-4" style="display:none;">
-                <p class="text-sm text-red-600 font-medium">งานที่คุณต้องทบทวน/อนุมัติ</p>
-                <h2 class="text-4xl font-bold text-red-800 mt-1" id="stat-pending-review">-</h2>
-            </div>
-
+            <h3 class="text-xl font-semibold mb-4">สถิติระบบภาพรวม</h3>
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="bg-blue-50 p-4 rounded-xl text-center"><p class="text-sm text-blue-600 font-medium">ส่งขอทั้งหมด</p><h2 class="text-3xl font-bold" id="stat-total">-</h2></div>
-                <div class="bg-green-50 p-4 rounded-xl text-center"><p class="text-sm text-green-600 font-medium">อนุมัติแล้ว</p><h2 class="text-3xl font-bold" id="stat-approved">-</h2></div>
+                <div class="bg-blue-50 p-4 rounded-xl text-center"><p class="text-sm text-blue-600">เอกสารทั้งหมด</p><h2 class="text-3xl font-bold" id="stat-total">-</h2></div>
+                <div class="bg-green-50 p-4 rounded-xl text-center"><p class="text-sm text-green-600">อนุมัติแล้ว</p><h2 class="text-3xl font-bold" id="stat-approved">-</h2></div>
             </div>
-            <div class="bg-yellow-50 p-4 rounded-xl text-center border border-yellow-100">
-                <p class="text-sm text-yellow-600 font-medium">เอกสารรอหน่วยงานอื่น</p><h2 class="text-3xl font-bold text-yellow-800" id="stat-pending">-</h2>
+            <div class="bg-yellow-50 p-4 rounded-xl text-center border mb-6"><p class="text-sm text-yellow-600">กำลังดำเนินการ</p><h2 class="text-3xl font-bold" id="stat-pending">-</h2></div>
+
+            <div class="bg-gray-50 p-4 rounded-2xl border mb-4">
+                <h4 class="font-semibold text-sm mb-3 text-gray-700"><i class="fas fa-filter mr-1"></i> ค้นหาเอกสารระบบ</h4>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <input type="text" id="f_docId" placeholder="รหัสเอกสาร" class="p-2 border rounded text-xs">
+                    <input type="text" id="f_title" placeholder="ชื่อเรื่อง" class="p-2 border rounded text-xs">
+                </div>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <select id="f_type" class="p-2 border rounded text-xs bg-white"><option value="">ทุกประเภท</option><option>WI</option><option>FI</option></select>
+                    <select id="f_dept" class="p-2 border rounded text-xs bg-white"><option value="">ทุกแผนก</option></select>
+                    <input type="number" id="f_year" placeholder="ปี (ค.ศ.)" class="p-2 border rounded text-xs">
+                </div>
+                <button onclick="searchDocs()" class="w-full bg-blue-600 text-white py-2 rounded-xl text-xs font-semibold"><i class="fas fa-search mr-1"></i> ค้นหา</button>
             </div>
         </div>
 
         <div id="tab-request" class="hidden-section p-4 tab-content">
             <h3 class="text-xl font-semibold mb-4">สร้างคำขอ</h3>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border">
                 <input type="text" id="docId" placeholder="หมายเลขเอกสาร" class="w-full mb-3 p-2 border rounded">
                 <input type="text" id="title" placeholder="เรื่อง" class="w-full mb-3 p-2 border rounded">
                 <div class="grid grid-cols-2 gap-3 mb-3">
@@ -84,48 +87,52 @@
         </div>
 
         <div id="tab-tracking" class="hidden-section p-4 tab-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold">ติดตามสถานะ</h3><button onclick="loadTracking()" class="text-blue-500 text-sm"><i class="fas fa-sync"></i> รีเฟรช</button>
-            </div>
-            <div id="trackingListContainer"></div>
-        </div>
-
-        <div id="tab-admin" class="hidden-section p-4 tab-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-red-600">รายการรออนุมัติ</h3>
-                <button onclick="loadApprovals()" class="text-blue-500 text-sm"><i class="fas fa-sync"></i> รีเฟรช</button>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xl font-semibold">ติดตาม & อนุมัติเอกสาร</h3>
+                <button onclick="loadDocuments()" class="text-blue-500 text-sm"><i class="fas fa-sync"></i> รีเฟรช</button>
             </div>
             
-            <div id="batchActionContainer" class="flex gap-2 mb-4 hidden-section">
-                <button onclick="selectAll()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">เลือกทั้งหมด</button>
-                <button onclick="actionBatchApprove('approve')" class="bg-green-500 text-white px-3 py-1 rounded text-xs flex-1">อนุมัติที่เลือก</button>
-                <button onclick="actionBatchApprove('reject')" class="bg-red-500 text-white px-3 py-1 rounded text-xs flex-1">ตีกลับที่เลือก</button>
+            <div id="batchDocContainer" class="flex gap-2 mb-3 hidden-section">
+                <button onclick="selectAllDocs()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">เลือกทั้งหมด</button>
+                <button onclick="actionBatchDoc('approve')" class="bg-green-500 text-white px-3 py-1 rounded text-xs flex-1">อนุมัติที่เลือก</button>
+                <button onclick="actionBatchDoc('reject')" class="bg-red-500 text-white px-3 py-1 rounded text-xs flex-1">ตีกลับ</button>
             </div>
 
-            <div id="approvalListContainer"><p class="text-center text-gray-400 py-4">ไม่มีรายการรออนุมัติ</p></div>
+            <div id="documentListContainer"></div>
+
+            <div class="flex justify-between items-center mt-4">
+                <button onclick="changePage(-1)" id="btnPrev" class="bg-gray-200 px-3 py-1 rounded text-xs disabled:opacity-50">ก่อนหน้า</button>
+                <span id="pageInfo" class="text-xs text-gray-500">หน้า 1/1</span>
+                <button onclick="changePage(1)" id="btnNext" class="bg-gray-200 px-3 py-1 rounded text-xs disabled:opacity-50">ถัดไป</button>
+            </div>
+        </div>
+
+        <div id="tab-users" class="hidden-section p-4 tab-content">
+            <h3 class="text-xl font-semibold text-purple-600 mb-4">อนุมัติสิทธิ์ผู้ลงทะเบียนใหม่</h3>
+            <div id="userListContainer"><p class="text-center text-gray-400 py-4">ไม่มีผู้ใช้รออนุมัติ</p></div>
         </div>
 
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-chart-pie"></i><span>ภาพรวม</span></div>
             <div class="nav-item" onclick="switchTab('request', this)"><i class="fas fa-file-medical"></i><span>สร้าง</span></div>
             <div class="nav-item" onclick="switchTab('tracking', this)"><i class="fas fa-tasks"></i><span>ติดตาม</span></div>
-            <div class="nav-item" id="navAdmin" style="display:none;" onclick="switchTab('admin', this)"><i class="fas fa-check-double text-red-500"></i><span class="text-red-500">อนุมัติ</span></div>
+            <div class="nav-item" id="navUsers" style="display:none;" onclick="switchTab('users', this)"><i class="fas fa-user-check text-purple-500"></i><span class="text-purple-500">จัดการผู้ใช้</span></div>
         </div>
     </div>
 </div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxSOGutKx0qinHxLzWa5cM1V_UI_vhsDwu9_ZLcrE6oceEgc5q9AGv3V1uPD1szoh-P/exec"; 
-    let currentUser = null;
+    let currentUser = null; let allDocsData = []; let currentPage = 1; const pageSize = 30;
     const showLoading = (msg) => Swal.fire({ title: msg, allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-    // (initApp, toggleAuth, handleLogin, handleRegister, submitRequest, loadTracking คงเดิมครับ)
     function initApp() {
         fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getDepartments' }) }).then(res => res.json()).then(res => {
             if(res.success && res.data.length > 0) {
-                let options = '<option value="">-- เลือกแผนก --</option>';
-                res.data.forEach(dept => { options += `<option value="${dept}">${dept}</option>`; });
-                document.getElementById('reg_dept').innerHTML = options;
+                let opts = '<option value="">-- เลือกแผนก --</option>'; let filterOpts = '<option value="">ทุกแผนก</option>';
+                res.data.forEach(d => { opts += `<option value="${d}">${d}</option>`; filterOpts += `<option value="${d}">${d}</option>`; });
+                document.getElementById('reg_dept').innerHTML = opts;
+                document.getElementById('f_dept').innerHTML = filterOpts;
             }
         });
     }
@@ -137,22 +144,17 @@
     }
 
     async function handleLogin() {
-        const user = document.getElementById('log_username').value;
-        const pass = document.getElementById('log_password').value;
-        if(!user || !pass) return Swal.fire('แจ้งเตือน', 'กรุณากรอกให้ครบ', 'warning');
+        const u = document.getElementById('log_username').value; const p = document.getElementById('log_password').value;
+        if(!u || !p) return Swal.fire('เตือน', 'กรุณากรอกให้ครบ', 'warning');
         showLoading('กำลังเข้าระบบ...');
         try {
-            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username: user, password: pass }) })).json();
+            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username: u, password: p }) })).json();
             if (res.success) {
                 currentUser = res.user; Swal.close();
                 document.getElementById('authSection').style.display = 'none'; document.getElementById('mainAppSection').style.display = 'block';
                 document.getElementById('displayUserName').innerText = currentUser.name; document.getElementById('displayUserRole').innerText = currentUser.role;
-                if(currentUser.role === 'Admin' || currentUser.role === 'Approver') {
-                    document.getElementById('navAdmin').style.display = 'flex';
-                    document.getElementById('admin-stats').style.display = 'block'; // โชว์กล่องแดงใน Dashboard
-                    loadApprovals(); 
-                }
-                loadDashboard(); loadTracking();
+                if(currentUser.role === 'Admin') { document.getElementById('navUsers').style.display = 'flex'; loadPendingUsers(); }
+                loadDashboard(); loadDocuments();
             } else Swal.fire('ล้มเหลว', res.message, 'error');
         } catch (err) { Swal.fire('Error', 'เชื่อมต่อไม่ได้', 'error'); }
     }
@@ -165,124 +167,140 @@
         if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); toggleAuth('login'); } else Swal.fire('ล้มเหลว', res.message, 'error');
     }
 
+    // แก้หน้าค้างตอนอัปโหลด
     async function submitRequest() {
         const fileInput = document.getElementById('fileUpload');
-        if(fileInput.files.length === 0) return Swal.fire('แจ้งเตือน', 'แนบไฟล์ด้วยครับ', 'warning');
-        showLoading('กำลังอัปโหลด...');
+        if(fileInput.files.length === 0) return Swal.fire('เตือน', 'แนบไฟล์ด้วยครับ', 'warning');
+        showLoading('กำลังบันทึกและอัปโหลดไฟล์...');
         const reader = new FileReader();
         reader.onload = async function() {
             const payload = { action: 'submitDoc', username: currentUser.username, name: currentUser.name, dept: currentUser.dept, docId: document.getElementById('docId').value, title: document.getElementById('title').value, docType: document.getElementById('docType').value, docStatus: document.getElementById('docStatus').value, revNo: document.getElementById('revNo').value, secretLevel: document.getElementById('secretLevel').value, fileName: fileInput.files[0].name, fileBase64: reader.result };
             try {
                 const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })).json();
-                if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); loadTracking(); loadDashboard(); document.querySelectorAll('.nav-item')[2].click(); }
-            } catch (err) { Swal.fire('ผิดพลาด', 'บันทึกไม่ได้', 'error'); }
+                Swal.close();
+                if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); loadDocuments(); loadDashboard(); document.querySelectorAll('.nav-item')[2].click(); }
+                else Swal.fire('ผิดพลาด', res.message, 'error');
+            } catch (err) { Swal.close(); Swal.fire('ผิดพลาด', 'ไม่ได้รับข้อมูลตอบกลับจากเซิร์ฟเวอร์ แต่ข้อมูลอาจบันทึกแล้ว กรุณาเช็คหน้าติดตาม', 'warning'); }
         };
         reader.readAsDataURL(fileInput.files[0]);
     }
 
-    // โหลด Dashboard ใหม่ที่รวมตัวเลขหัวหน้า
     async function loadDashboard() {
         try {
-            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboard', username: currentUser.username }) })).json();
+            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getDashboardStats', username: currentUser.username }) })).json();
             if (res.success) {
                 document.getElementById('stat-total').innerText = res.stats.total;
                 document.getElementById('stat-approved').innerText = res.stats.approved;
                 document.getElementById('stat-pending').innerText = res.stats.pending;
-                if(currentUser.role !== 'User') document.getElementById('stat-pending-review').innerText = res.stats.pendingReview;
             }
-        } catch (err) { console.error(err); }
+        } catch (err) {}
     }
 
-    async function loadTracking() {
-        const container = document.getElementById('trackingListContainer'); container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> โหลดข้อมูล...</p>';
-        try {
-            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getTracking', username: currentUser.username }) })).json();
-            if (res.success && res.data.length > 0) {
-                let html = '';
-                res.data.forEach(item => {
-                    let stCol = item.status.includes('อนุมัติเสร็จ') ? 'bg-green-500' : (item.status.includes('ตีกลับ') ? 'bg-red-500' : 'bg-yellow-500');
-                    html += `<div class="bg-white border p-4 rounded-xl mb-3 flex items-center justify-between"><div><h4 class="font-medium text-sm">${item.docId}</h4><p class="text-xs text-gray-500">${item.title}</p></div><span class="${stCol} text-white text-xs px-2 py-1 rounded-full text-center max-w-[120px] leading-tight">${item.status}</span></div>`;
-                });
-                container.innerHTML = html;
-            } else container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่พบประวัติ</p>';
-        } catch (err) { container.innerHTML = '<p class="text-center text-red-400 py-4">โหลดผิดพลาด</p>'; }
+    // ค้นหาเอกสาร
+    function searchDocs() { loadDocuments(); document.querySelectorAll('.nav-item')[2].click(); switchTab('tracking', document.querySelectorAll('.nav-item')[2]); }
+
+    // โหลดเอกสารทั้งหมด (หน้าละ 30 รายการ)
+    async function loadDocuments() {
+        const container = document.getElementById('documentListContainer');
+        container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> กำลังโหลดเอกสาร...</p>';
+        const payload = {
+            action: 'getAllDocuments', username: currentUser.username, role: currentUser.role,
+            f_docId: document.getElementById('f_docId').value, f_title: document.getElementById('f_title').value,
+            f_type: document.getElementById('f_type').value, f_dept: document.getElementById('f_dept').value,
+            f_year: document.getElementById('f_year').value
+        };
+        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })).json();
+        if(res.success) { allDocsData = res.data; currentPage = 1; renderPage(); }
     }
 
-    // โหลดหน้ารออนุมัติ (เพิ่ม Checkbox)
-    async function loadApprovals() {
-        const container = document.getElementById('approvalListContainer');
-        container.innerHTML = '<p class="text-center"><i class="fas fa-spinner fa-spin"></i> กำลังโหลด...</p>';
-        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getApprovals', username: currentUser.username }) })).json();
+    function renderPage() {
+        const container = document.getElementById('documentListContainer');
+        if (allDocsData.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่พบเอกสาร</p>'; return; }
         
-        if (res.success && res.data.length > 0) {
-            document.getElementById('batchActionContainer').style.display = 'flex'; // โชว์ปุ่ม Batch
-            let html = '';
-            res.data.forEach(item => {
-                html += `
-                <div class="bg-white border border-red-100 shadow-sm p-4 rounded-xl mb-3 flex flex-col">
-                    <div class="flex items-start mb-2">
-                        <input type="checkbox" class="batch-cb mt-1 mr-3 w-5 h-5" value="${item.row}" data-docid="${item.docId}" data-title="${item.title}">
-                        <div>
-                            <p class="font-bold text-gray-800 leading-tight">${item.docId}</p>
-                            <p class="text-sm text-gray-600 mb-1 leading-tight">${item.title}</p>
-                            <p class="text-xs text-blue-500">สถานะ: ${item.currentStatus} | จาก: ${item.owner}</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 mt-2 pl-8">
-                        <a href="${item.url}" target="_blank" class="flex-1 bg-gray-100 text-gray-700 text-center py-2 rounded text-sm"><i class="fas fa-eye"></i> ดูไฟล์</a>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-        } else {
-            document.getElementById('batchActionContainer').style.display = 'none';
-            container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่มีเอกสารรออนุมัติ</p>';
-        }
-    }
-
-    function selectAll() {
-        let checkboxes = document.querySelectorAll('.batch-cb');
-        let isChecked = Array.from(checkboxes).some(cb => cb.checked);
-        checkboxes.forEach(cb => cb.checked = !isChecked);
-    }
-
-    // ฟังก์ชันอนุมัติทีละหลายรายการ พร้อมใส่ Note
-    async function actionBatchApprove(actionType) {
-        let checkboxes = document.querySelectorAll('.batch-cb:checked');
-        if(checkboxes.length === 0) return Swal.fire('แจ้งเตือน', 'กรุณาเลือกเอกสารอย่างน้อย 1 รายการ', 'warning');
+        let start = (currentPage - 1) * pageSize; let end = start + pageSize;
+        let pagedData = allDocsData.slice(start, end);
+        let totalPages = Math.ceil(allDocsData.length / pageSize);
         
-        let items = [];
-        checkboxes.forEach(cb => items.push({ row: cb.value, docId: cb.dataset.docid, title: cb.dataset.title }));
+        document.getElementById('pageInfo').innerText = `หน้า ${currentPage}/${totalPages} (รวม ${allDocsData.length} รายการ)`;
+        document.getElementById('btnPrev').disabled = currentPage === 1;
+        document.getElementById('btnNext').disabled = currentPage === totalPages;
 
-        let titleTxt = actionType === 'approve' ? `ยืนยันอนุมัติ ${items.length} รายการ?` : `ตีกลับ ${items.length} รายการ?`;
-        let confirmCol = actionType === 'approve' ? '#22c55e' : '#ef4444';
+        let html = ''; let hasApproveItem = false;
+        pagedData.forEach(item => {
+            let stCol = item.status.includes('อนุมัติเสร็จ') ? 'bg-green-500' : (item.status.includes('ตีกลับ') ? 'bg-red-500' : 'bg-yellow-500');
+            let cbHtml = '';
+            if(item.isCanApprove) {
+                hasApproveItem = true;
+                cbHtml = `<input type="checkbox" class="doc-cb mr-2 mt-1 w-4 h-4" value="${item.row}" data-docid="${item.docId}" data-title="${item.title}">`;
+            }
+            html += `
+            <div class="bg-white border p-3 rounded-xl mb-2 flex flex-col">
+                <div class="flex justify-between items-start mb-1">
+                    <div class="flex items-start">${cbHtml}<div><h4 class="font-bold text-sm text-gray-800">${item.docId}</h4><p class="text-xs text-gray-600">${item.title}</p></div></div>
+                    <span class="${stCol} text-white text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap">${item.status}</span>
+                </div>
+                <div class="flex justify-between items-center mt-2 border-t pt-2">
+                    <span class="text-[10px] text-gray-400">แผนก: ${item.dept} | ปี: ${item.year}</span>
+                    <a href="${item.url}" target="_blank" class="bg-blue-50 text-blue-600 text-xs px-3 py-1 rounded border border-blue-200"><i class="fas fa-eye mr-1"></i> ดูไฟล์</a>
+                </div>
+            </div>`;
+        });
+        document.getElementById('batchDocContainer').style.display = hasApproveItem ? 'flex' : 'none';
+        container.innerHTML = html;
+    }
 
-        Swal.fire({
-            title: titleTxt,
-            input: 'textarea',
-            inputPlaceholder: 'กรอกหมายเหตุ หรือข้อความเพิ่มเติม (ไม่บังคับ)',
-            icon: 'question', showCancelButton: true, confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก', confirmButtonColor: confirmCol
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                showLoading('กำลังดำเนินการ และส่งอีเมล...');
-                let note = result.value || "";
-                
-                const payload = { action: 'batchApprove', items: items, actionType: actionType, note: note };
-                const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })).json();
-                
-                if (res.success) {
-                    Swal.fire('สำเร็จ', res.message, 'success');
-                    loadApprovals(); loadDashboard(); // โหลดใหม่
-                }
+    function changePage(dir) { currentPage += dir; renderPage(); }
+    function selectAllDocs() { let cbs = document.querySelectorAll('.doc-cb'); let ch = Array.from(cbs).some(c => c.checked); cbs.forEach(c => c.checked = !ch); }
+
+    // อนุมัติเอกสารในหน้าติดตาม
+    async function actionBatchDoc(actionType) {
+        let cbs = document.querySelectorAll('.doc-cb:checked');
+        if(cbs.length === 0) return Swal.fire('เตือน', 'เลือกอย่างน้อย 1 รายการ', 'warning');
+        let items = []; cbs.forEach(c => items.push({ row: c.value, docId: c.dataset.docid, title: c.dataset.title }));
+        Swal.fire({ title: actionType==='approve' ? `อนุมัติ ${items.length} รายการ?` : `ตีกลับ ${items.length} รายการ?`, input: 'textarea', inputPlaceholder: 'หมายเหตุเพิ่มเติม (ถ้ามี)', icon: 'question', showCancelButton: true, confirmButtonText: 'ยืนยัน', confirmButtonColor: actionType==='approve' ? '#22c55e' : '#ef4444' }).then(async res => {
+            if (res.isConfirmed) {
+                showLoading('กำลังบันทึก...');
+                const r = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'batchApproveDoc', items: items, actionType: actionType, note: res.value||"" }) })).json();
+                if(r.success) { Swal.fire('สำเร็จ', r.message, 'success'); loadDocuments(); loadDashboard(); }
             }
         });
     }
 
-    function switchTab(tabId, element) {
-        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    // หน้าอนุมัติผู้ลงทะเบียนใหม่ (Admin)
+    async function loadPendingUsers() {
+        const container = document.getElementById('userListContainer');
+        container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> โหลดผู้ใช้...</p>';
+        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getPendingUsers' }) })).json();
+        if(res.success && res.data.length > 0) {
+            let html = '';
+            res.data.forEach(u => {
+                html += `
+                <div class="bg-white border p-3 rounded-xl mb-2 flex flex-col">
+                    <p class="font-bold text-sm text-gray-800">${u.name} (<span class="text-blue-600">${u.username}</span>)</p>
+                    <p class="text-xs text-gray-500 mb-2">แผนก: ${u.dept} | Email: ${u.email}</p>
+                    <div class="flex gap-2">
+                        <select id="role_${u.row}" class="p-1 border rounded text-xs bg-gray-50"><option value="User">User</option><option value="Approver">Approver</option><option value="Admin">Admin</option></select>
+                        <button onclick="actionUser(${u.row}, 'approve')" class="flex-1 bg-green-500 text-white text-xs py-1 rounded">อนุมัติ</button>
+                        <button onclick="actionUser(${u.row}, 'reject')" class="bg-red-500 text-white text-xs px-3 py-1 rounded">ปฏิเสธ</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        } else container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่มีผู้ใช้รออนุมัติ</p>';
+    }
+
+    async function actionUser(rowNum, actionType) {
+        showLoading('กำลังดำเนินการ...');
+        let role = actionType === 'approve' ? document.getElementById(`role_${rowNum}`).value : '';
+        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'approveUser', row: rowNum, actionType: actionType, role: role }) })).json();
+        if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); loadPendingUsers(); }
+    }
+
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-content').forEach(e => e.style.display = 'none');
         document.getElementById('tab-' + tabId).style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
     }
     function logout() { location.reload(); }
 </script>
