@@ -22,18 +22,33 @@
 <div class="app-container">
     <div id="authSection" class="p-8 flex flex-col justify-center min-h-screen bg-blue-50">
         <div class="text-center mb-8"><i class="fas fa-file-signature text-6xl text-blue-500 mb-4"></i><h1 class="text-2xl font-semibold" id="authTitle">เข้าสู่ระบบ</h1></div>
+        
         <div id="loginForm" class="bg-white p-6 rounded-2xl shadow-sm border">
-            <input type="text" id="log_username" placeholder="Username" class="w-full mb-4 p-3 border rounded-xl">
-            <input type="password" id="log_password" placeholder="Password" class="w-full mb-6 p-3 border rounded-xl">
+            <input type="text" id="log_username" placeholder="Username" class="w-full mb-4 p-3 border rounded-xl text-sm">
+            
+            <div class="relative mb-4">
+                <input type="password" id="log_password" placeholder="Password" class="w-full p-3 border rounded-xl text-sm pr-10">
+                <button type="button" onclick="togglePassView('log_password')" class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"><i class="fas fa-eye"></i></button>
+            </div>
+
+            <div class="flex items-center mb-6 text-sm text-gray-600">
+                <input type="checkbox" id="chk_remember" class="mr-2 rounded">
+                <label for="chk_remember">จดจำข้อมูลเข้าระบบ</label>
+            </div>
+
             <button onclick="handleLogin()" class="w-full bg-blue-500 text-white p-3 rounded-xl font-medium">เข้าสู่ระบบ</button>
             <p class="text-center text-sm text-gray-500 mt-4 cursor-pointer" onclick="toggleAuth('register')">ลงทะเบียนใหม่</p>
         </div>
+
         <div id="registerForm" class="hidden-section bg-white p-6 rounded-2xl shadow-sm border">
-            <input type="text" id="reg_username" placeholder="Username" class="w-full mb-3 p-3 border rounded-xl">
-            <input type="password" id="reg_password" placeholder="Password" class="w-full mb-3 p-3 border rounded-xl">
-            <input type="text" id="reg_name" placeholder="ชื่อ-นามสกุล" class="w-full mb-3 p-3 border rounded-xl">
-            <select id="reg_dept" class="w-full mb-3 p-3 border rounded-xl bg-white"><option value="">กำลังโหลดแผนก...</option></select>
-            <input type="email" id="reg_email" placeholder="Email" class="w-full mb-4 p-3 border rounded-xl">
+            <input type="text" id="reg_username" placeholder="Username" class="w-full mb-3 p-3 border rounded-xl text-sm">
+            <div class="relative mb-3">
+                <input type="password" id="reg_password" placeholder="Password" class="w-full p-3 border rounded-xl text-sm pr-10">
+                <button type="button" onclick="togglePassView('reg_password')" class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"><i class="fas fa-eye"></i></button>
+            </div>
+            <input type="text" id="reg_name" placeholder="ชื่อ-นามสกุล" class="w-full mb-3 p-3 border rounded-xl text-sm">
+            <select id="reg_dept" class="w-full mb-3 p-3 border rounded-xl bg-white text-sm"><option value="">กำลังโหลดแผนก...</option></select>
+            <input type="email" id="reg_email" placeholder="Email" class="w-full mb-4 p-3 border rounded-xl text-sm">
             <button onclick="handleRegister()" class="w-full bg-green-500 text-white p-3 rounded-xl font-medium">สมัครใช้งาน</button>
             <p class="text-center text-sm text-gray-500 mt-4 cursor-pointer" onclick="toggleAuth('login')">ย้อนกลับ</p>
         </div>
@@ -71,15 +86,15 @@
         <div id="tab-request" class="hidden-section p-4 tab-content">
             <h3 class="text-xl font-semibold mb-4">สร้างคำขอ</h3>
             <div class="bg-white p-4 rounded-xl shadow-sm border">
-                <input type="text" id="docId" placeholder="หมายเลขเอกสาร" class="w-full mb-3 p-2 border rounded">
-                <input type="text" id="title" placeholder="เรื่อง" class="w-full mb-3 p-2 border rounded">
+                <input type="text" id="docId" placeholder="หมายเลขเอกสาร" class="w-full mb-3 p-2 border rounded text-sm">
+                <input type="text" id="title" placeholder="เรื่อง" class="w-full mb-3 p-2 border rounded text-sm">
                 <div class="grid grid-cols-2 gap-3 mb-3">
-                    <select id="docType" class="w-full p-2 border rounded"><option>WI</option><option>FI</option></select>
-                    <select id="docStatus" class="w-full p-2 border rounded"><option>เอกสารบังคับใช้</option><option>เอกสารทั่วไป</option></select>
+                    <select id="docType" class="w-full p-2 border rounded text-sm"><option>WI</option><option>FI</option></select>
+                    <select id="docStatus" class="w-full p-2 border rounded text-sm"><option>เอกสารบังคับใช้</option><option>เอกสารทั่วไป</option></select>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mb-3">
-                    <input type="number" id="revNo" placeholder="ฉบับที่" class="w-full p-2 border rounded">
-                    <select id="secretLevel" class="w-full p-2 border rounded"><option>เอกสารภายใน</option><option>ลับ</option></select>
+                    <input type="number" id="revNo" placeholder="ฉบับที่" class="w-full p-2 border rounded text-sm">
+                    <select id="secretLevel" class="w-full p-2 border rounded text-sm"><option>เอกสารภายใน</option><option>ลับ</option></select>
                 </div>
                 <input type="file" id="fileUpload" accept=".pdf" class="w-full mb-4 p-2 border rounded text-sm">
                 <button onclick="submitRequest()" class="w-full bg-blue-500 text-white p-3 rounded-xl font-medium">ส่งขออนุมัติ</button>
@@ -91,15 +106,12 @@
                 <h3 class="text-xl font-semibold">ติดตาม & อนุมัติเอกสาร</h3>
                 <button onclick="loadDocuments()" class="text-blue-500 text-sm"><i class="fas fa-sync"></i> รีเฟรช</button>
             </div>
-            
             <div id="batchDocContainer" class="flex gap-2 mb-3 hidden-section">
                 <button onclick="selectAllDocs()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">เลือกทั้งหมด</button>
                 <button onclick="actionBatchDoc('approve')" class="bg-green-500 text-white px-3 py-1 rounded text-xs flex-1">อนุมัติที่เลือก</button>
                 <button onclick="actionBatchDoc('reject')" class="bg-red-500 text-white px-3 py-1 rounded text-xs flex-1">ตีกลับ</button>
             </div>
-
             <div id="documentListContainer"></div>
-
             <div class="flex justify-between items-center mt-4">
                 <button onclick="changePage(-1)" id="btnPrev" class="bg-gray-200 px-3 py-1 rounded text-xs disabled:opacity-50">ก่อนหน้า</button>
                 <span id="pageInfo" class="text-xs text-gray-500">หน้า 1/1</span>
@@ -108,15 +120,18 @@
         </div>
 
         <div id="tab-users" class="hidden-section p-4 tab-content">
-            <h3 class="text-xl font-semibold text-purple-600 mb-4">อนุมัติสิทธิ์ผู้ลงทะเบียนใหม่</h3>
-            <div id="userListContainer"><p class="text-center text-gray-400 py-4">ไม่มีผู้ใช้รออนุมัติ</p></div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-purple-600">จัดการผู้ใช้ทั้งหมด</h3>
+                <button onclick="loadAllUsersAdmin()" class="text-blue-500 text-sm"><i class="fas fa-sync"></i> รีเฟรช</button>
+            </div>
+            <div id="userListContainer"></div>
         </div>
 
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-chart-pie"></i><span>ภาพรวม</span></div>
             <div class="nav-item" onclick="switchTab('request', this)"><i class="fas fa-file-medical"></i><span>สร้าง</span></div>
             <div class="nav-item" onclick="switchTab('tracking', this)"><i class="fas fa-tasks"></i><span>ติดตาม</span></div>
-            <div class="nav-item" id="navUsers" style="display:none;" onclick="switchTab('users', this)"><i class="fas fa-user-check text-purple-500"></i><span class="text-purple-500">จัดการผู้ใช้</span></div>
+            <div class="nav-item" id="navUsers" style="display:none;" onclick="switchTab('users', this)"><i class="fas fa-users-cog text-purple-500"></i><span class="text-purple-500">จัดการผู้ใช้</span></div>
         </div>
     </div>
 </div>
@@ -127,6 +142,13 @@
     const showLoading = (msg) => Swal.fire({ title: msg, allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     function initApp() {
+        // ดึงจำรหัสผ่านที่เซฟไว้ขึ้นมา
+        if(localStorage.getItem("rem_user")) {
+            document.getElementById("log_username").value = localStorage.getItem("rem_user");
+            document.getElementById("log_password").value = localStorage.getItem("rem_pass");
+            document.getElementById("chk_remember").checked = true;
+        }
+
         fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getDepartments' }) }).then(res => res.json()).then(res => {
             if(res.success && res.data.length > 0) {
                 let opts = '<option value="">-- เลือกแผนก --</option>'; let filterOpts = '<option value="">ทุกแผนก</option>';
@@ -135,6 +157,11 @@
                 document.getElementById('f_dept').innerHTML = filterOpts;
             }
         });
+    }
+
+    function togglePassView(id) {
+        let el = document.getElementById(id);
+        el.type = el.type === "password" ? "text" : "password";
     }
 
     function toggleAuth(type) {
@@ -146,6 +173,14 @@
     async function handleLogin() {
         const u = document.getElementById('log_username').value; const p = document.getElementById('log_password').value;
         if(!u || !p) return Swal.fire('เตือน', 'กรุณากรอกให้ครบ', 'warning');
+        
+        // บันทึกการจดจำรหัสผ่าน
+        if(document.getElementById("chk_remember").checked) {
+            localStorage.setItem("rem_user", u); localStorage.setItem("rem_pass", p);
+        } else {
+            localStorage.removeItem("rem_user"); localStorage.removeItem("rem_pass");
+        }
+
         showLoading('กำลังเข้าระบบ...');
         try {
             const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username: u, password: p }) })).json();
@@ -153,7 +188,7 @@
                 currentUser = res.user; Swal.close();
                 document.getElementById('authSection').style.display = 'none'; document.getElementById('mainAppSection').style.display = 'block';
                 document.getElementById('displayUserName').innerText = currentUser.name; document.getElementById('displayUserRole').innerText = currentUser.role;
-                if(currentUser.role === 'Admin') { document.getElementById('navUsers').style.display = 'flex'; loadPendingUsers(); }
+                if(currentUser.role === 'Admin') { document.getElementById('navUsers').style.display = 'flex'; loadAllUsersAdmin(); }
                 loadDashboard(); loadDocuments();
             } else Swal.fire('ล้มเหลว', res.message, 'error');
         } catch (err) { Swal.fire('Error', 'เชื่อมต่อไม่ได้', 'error'); }
@@ -167,7 +202,6 @@
         if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); toggleAuth('login'); } else Swal.fire('ล้มเหลว', res.message, 'error');
     }
 
-    // แก้หน้าค้างตอนอัปโหลด
     async function submitRequest() {
         const fileInput = document.getElementById('fileUpload');
         if(fileInput.files.length === 0) return Swal.fire('เตือน', 'แนบไฟล์ด้วยครับ', 'warning');
@@ -196,10 +230,8 @@
         } catch (err) {}
     }
 
-    // ค้นหาเอกสาร
     function searchDocs() { loadDocuments(); document.querySelectorAll('.nav-item')[2].click(); switchTab('tracking', document.querySelectorAll('.nav-item')[2]); }
 
-    // โหลดเอกสารทั้งหมด (หน้าละ 30 รายการ)
     async function loadDocuments() {
         const container = document.getElementById('documentListContainer');
         container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> กำลังโหลดเอกสาร...</p>';
@@ -252,7 +284,6 @@
     function changePage(dir) { currentPage += dir; renderPage(); }
     function selectAllDocs() { let cbs = document.querySelectorAll('.doc-cb'); let ch = Array.from(cbs).some(c => c.checked); cbs.forEach(c => c.checked = !ch); }
 
-    // อนุมัติเอกสารในหน้าติดตาม
     async function actionBatchDoc(actionType) {
         let cbs = document.querySelectorAll('.doc-cb:checked');
         if(cbs.length === 0) return Swal.fire('เตือน', 'เลือกอย่างน้อย 1 รายการ', 'warning');
@@ -266,34 +297,61 @@
         });
     }
 
-    // หน้าอนุมัติผู้ลงทะเบียนใหม่ (Admin)
-    async function loadPendingUsers() {
+    // จัดการผู้ใช้ทั้งหมด (Admin Full Management)
+    async function loadAllUsersAdmin() {
         const container = document.getElementById('userListContainer');
-        container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> โหลดผู้ใช้...</p>';
-        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getPendingUsers' }) })).json();
+        container.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> โหลดผู้ใช้ทั้งหมด...</p>';
+        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getAllUsers' }) })).json();
         if(res.success && res.data.length > 0) {
             let html = '';
             res.data.forEach(u => {
+                let stCol = u.status === 'Active' ? 'text-green-600' : (u.status === 'Pending' ? 'text-orange-500 font-bold' : 'text-red-500');
                 html += `
-                <div class="bg-white border p-3 rounded-xl mb-2 flex flex-col">
-                    <p class="font-bold text-sm text-gray-800">${u.name} (<span class="text-blue-600">${u.username}</span>)</p>
-                    <p class="text-xs text-gray-500 mb-2">แผนก: ${u.dept} | Email: ${u.email}</p>
-                    <div class="flex gap-2">
-                        <select id="role_${u.row}" class="p-1 border rounded text-xs bg-gray-50"><option value="User">User</option><option value="Approver">Approver</option><option value="Admin">Admin</option></select>
-                        <button onclick="actionUser(${u.row}, 'approve')" class="flex-1 bg-green-500 text-white text-xs py-1 rounded">อนุมัติ</button>
-                        <button onclick="actionUser(${u.row}, 'reject')" class="bg-red-500 text-white text-xs px-3 py-1 rounded">ปฏิเสธ</button>
+                <div class="bg-white border p-3 rounded-xl mb-3 flex flex-col text-xs">
+                    <div class="flex justify-between border-b pb-1 mb-2 font-bold text-sm">
+                        <span>${u.username}</span>
+                        <span class="${stCol}">${u.status}</span>
                     </div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div><label class="text-gray-400">ชื่อ-นามสกุล:</label><input type="text" id="un_${u.row}" value="${u.name}" class="w-full p-1 border rounded"></div>
+                        <div><label class="text-gray-400">อีเมล:</label><input type="text" id="ue_${u.row}" value="${u.email}" class="w-full p-1 border rounded"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div><label class="text-gray-400">แผนก:</label><input type="text" id="ud_${u.row}" value="${u.dept}" class="w-full p-1 border rounded"></div>
+                        <div><label class="text-gray-400">สิทธิ์ (Role):</label>
+                            <select id="ur_${u.row}" class="w-full p-1 border rounded bg-white">
+                                <option value="User" ${u.role==='User'?'selected':''}>User</option>
+                                <option value="Approver" ${u.role==='Approver'?'selected':''}>Approver</option>
+                                <option value="Admin" ${u.role==='Admin'?'selected':''}>Admin</option>
+                            </select>
+                        </div>
+                        <div><label class="text-gray-400">สถานะ:</label>
+                            <select id="us_${u.row}" class="w-full p-1 border rounded bg-white">
+                                <option value="Active" ${u.status==='Active'?'selected':''}>Active</option>
+                                <option value="Pending" ${u.status==='Pending'?'selected':''}>Pending</option>
+                                <option value="Rejected" ${u.status==='Rejected'?'selected':''}>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="saveUserAdmin(${u.row})" class="bg-purple-600 text-white py-1.5 rounded mt-1 font-semibold hover:bg-purple-700"><i class="fas fa-save mr-1"></i> บันทึกการเปลี่ยนแปลง</button>
                 </div>`;
             });
             container.innerHTML = html;
-        } else container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่มีผู้ใช้รออนุมัติ</p>';
+        } else container.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่พบข้อมูลผู้ใช้</p>';
     }
 
-    async function actionUser(rowNum, actionType) {
-        showLoading('กำลังดำเนินการ...');
-        let role = actionType === 'approve' ? document.getElementById(`role_${rowNum}`).value : '';
-        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'approveUser', row: rowNum, actionType: actionType, role: role }) })).json();
-        if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); loadPendingUsers(); }
+    async function saveUserAdmin(rowNum) {
+        showLoading('กำลังอัปเดตข้อมูลผู้ใช้...');
+        const payload = {
+            action: 'updateUserAdmin', row: rowNum,
+            name: document.getElementById(`un_${rowNum}`).value,
+            email: document.getElementById(`ue_${rowNum}`).value,
+            dept: document.getElementById(`ud_${rowNum}`).value,
+            role: document.getElementById(`ur_${rowNum}`).value,
+            status: document.getElementById(`us_${rowNum}`).value
+        };
+        const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })).json();
+        if(res.success) { Swal.fire('สำเร็จ', res.message, 'success'); loadAllUsersAdmin(); }
     }
 
     function switchTab(tabId, el) {
